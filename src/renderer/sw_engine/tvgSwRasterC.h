@@ -21,6 +21,7 @@
  */
 
 
+#include <algorithm>
 template<typename PIXEL_T>
 static void inline cRasterTranslucentPixels(PIXEL_T* dst, PIXEL_T* src, uint32_t len, uint32_t opacity)
 {
@@ -56,39 +57,9 @@ template<typename PIXEL_T>
 static void inline cRasterPixels(PIXEL_T* dst, PIXEL_T val, uint32_t offset, int32_t len)
 {
     dst += offset;
-
-    //fix the misaligned memory
-    auto alignOffset = (long long) dst % 8;
-    if (alignOffset > 0) {
-        if (sizeof(PIXEL_T) == 4) alignOffset /= 4;
-        else if (sizeof(PIXEL_T) == 1) alignOffset = 8 - alignOffset;
-        while (alignOffset > 0 && len > 0) {
-            *dst++ = val;
-            --len;
-            --alignOffset;
-        }
-    }
-
-    //64bits faster clear
-    if ((sizeof(PIXEL_T) == 4)) {
-        auto val64 = (uint64_t(val) << 32) | uint64_t(val);
-        while (len > 1) {
-            *reinterpret_cast<uint64_t*>(dst) = val64;
-            len -= 2;
-            dst += 2;
-        }
-    } else if (sizeof(PIXEL_T) == 1) {
-        auto val32 = (uint32_t(val) << 24) | (uint32_t(val) << 16) | (uint32_t(val) << 8) | uint32_t(val);
-        auto val64 = (uint64_t(val32) << 32) | val32;
-        while (len > 7) {
-            *reinterpret_cast<uint64_t*>(dst) = val64;
-            len -= 8;
-            dst += 8;
-        }
-    }
-
-    //leftovers
-    while (len--) *dst++ = val;
+	std::fill_n(dst, len, val);
+	dst += len;
+	return;
 }
 
 
