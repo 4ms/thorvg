@@ -1823,15 +1823,15 @@ void rasterXYFlip(uint32_t* src, uint32_t* dst, int32_t stride, int32_t w, int32
         dst += ((bbox.min.x * stride) + bbox.min.y);
     }
 
-    #pragma omp parallel for
-    for (int x = 0; x < w; x += BLOCK) {
-        auto bx = std::min(w, x + BLOCK) - x;
+    // #pragma omp parallel for
+    for (int32_t x = 0; x < w; x += BLOCK) {
+        auto bx = std::min<int32_t>(w, x + BLOCK) - x;
         auto in = &src[x];
         auto out = &dst[x * stride];
         for (int y = 0; y < h; y += BLOCK) {
             auto p = &in[y * stride];
             auto q = &out[y];
-            auto by = std::min(h, y + BLOCK) - y;
+            auto by = std::min<int32_t>(h, y + BLOCK) - y;
             for (int xx = 0; xx < bx; ++xx) {
                 for (int yy = 0; yy < by; ++yy) {
                     *q = *p;
