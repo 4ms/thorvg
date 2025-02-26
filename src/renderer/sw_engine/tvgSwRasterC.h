@@ -133,7 +133,7 @@ static bool inline cRasterABGRtoARGB(RenderSurface* surface)
     TVGLOG("SW_ENGINE", "Convert ColorSpace ABGR - ARGB [Size: %d x %d]", surface->w, surface->h);
 
     //64bits faster converting
-    if (surface->w % 2 == 0) {
+    if (surface->w % 2 == 0 && &surface->buf32 % 8 == 0) {
         auto buffer = reinterpret_cast<uint64_t*>(surface->buf32);
         for (uint32_t y = 0; y < surface->h; ++y, buffer += surface->stride / 2) {
             auto dst = buffer;
