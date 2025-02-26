@@ -61,14 +61,14 @@ static bool _buildVersionInfo(uint32_t* major, uint32_t* minor, uint32_t* micro)
     const char* x;
 
     if (!(x = strchr(p, '.'))) return false;
-    uint32_t majorVal = atoi(p);
+    int majorVal = atoi(p);
     p = x + 1;
 
     if (!(x = strchr(p, '.'))) return false;
-    uint32_t minorVal = atoi(p);
+    int minorVal = atoi(p);
     p = x + 1;
 
-    uint32_t microVal = atoi(p);
+    int microVal = atoi(p);
 
     char sum[7];
     snprintf(sum, sizeof(sum), "%d%02d%02d", majorVal, minorVal, microVal);
